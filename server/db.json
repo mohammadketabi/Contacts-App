@@ -1,0 +1,44 @@
+{
+  "contacts": [
+    {
+      "fullName": "Mohammad Ketabi",
+      "email": "mohammad.ketabi@gmail.com",
+      "mobile": "4164749293",
+      "job": "Web",
+      "img": "https://mohammadketabi.com/wp-content/themes/mk-portfolio-2022/assets/images/avatars/avatar-1.jpg",
+      "group": "1",
+      "id": 1
+    },
+    {
+      "fullName": "Mali",
+      "email": "malihe.molaei93@gmail.com",
+      "mobile": "4164749293",
+      "job": "HR",
+      "img": "https://mohammadketabi.com/wp-content/themes/mk-portfolio-2022/assets/images/avatars/avatar-1.jpg",
+      "group": "4",
+      "id": 2
+    }
+  ],
+  "groups": [
+    {
+      "id": "1",
+      "name": "group 1"
+    },
+    {
+      "id": "2",
+      "name": "group 2"
+    },
+    {
+      "id": "3",
+      "name": "group 3"
+    },
+    {
+      "id": "4",
+      "name": "group 4"
+    },
+    {
+      "id": "5",
+      "name": "group 5"
+    }
+  ]
+}
