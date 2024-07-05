@@ -1,6 +1,9 @@
 import React from "react";
+import { useContext } from "react";
+import { ContactContext } from "../../context/contactContext";
 
-const SearchContacts = ({ query, search }) => {
+const SearchContacts = () => {
+  const { contactQuery, contactSearch } = useContext(ContactContext);
   return (
     <div>
       <form className="d-flex" role="search">
@@ -9,8 +12,8 @@ const SearchContacts = ({ query, search }) => {
           type="search"
           placeholder="Search"
           aria-label="Search"
-          onChange={search}
-          value={query.text}
+          onChange={contactSearch}
+          value={contactQuery.text}
         />
         <button className="btn btn-outline-success" type="submit">
           Search

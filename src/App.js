@@ -16,22 +16,15 @@ import {
   createContact,
   deleteContact,
 } from "./services/contactServices";
+import { ContactContext } from "./context/contactContext";
 
 function App() {
-  const [forceRender, setForceRender] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
   const [groups, setGroups] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [contact, setContact] = useState({
-    fullName: "",
-    email: "",
-    mobile: "",
-    job: "",
-    img: "",
-    group: "",
-  });
-  const [query, setQuery] = useState({ text: "" });
+  const [contact, setContact] = useState({});
+  const [contactQuery, setContactQuery] = useState({ text: "" });
 
   const navigate = useNavigate();
 
@@ -56,24 +49,6 @@ function App() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        const { data: contacts } = await getAllContacts();
-
-        setContacts(contacts);
-
-        setLoading(false);
-      } catch (error) {
-        console.log(error.message);
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [forceRender]);
-
   const createContactForm = async (e) => {
     e.preventDefault();
 
@@ -82,7 +57,7 @@ function App() {
 
       if (status === 201) {
         setContact({});
-        setForceRender(!forceRender);
+
         navigate("/contacts");
       }
     } catch (error) {
@@ -90,11 +65,11 @@ function App() {
     }
   };
 
-  const setContactInfo = (e) => {
+  const onContactChange = (e) => {
     setContact({ ...contact, [e.target.name]: e.target.value });
   };
 
-  const confirm = (contactId, contactFullname) => {
+  const confirmDelete = (contactId, contactFullname) => {
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
@@ -132,8 +107,8 @@ function App() {
   };
 
   const contactSearch = (e) => {
-    setQuery({ ...query, text: e.target.value });
-    console.log(contacts);
+    setContactQuery({ ...contactQuery, text: e.target.value });
+
     const allContacts = contacts.filter((c) => {
       return c.fullName.toLowerCase().includes(e.target.value.toLowerCase());
     });
@@ -141,45 +116,54 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <Navbar query={query} search={contactSearch} />
-      <Routes>
-        <Route path="/" element={<Navigate to="/contacts" />} />
-        <Route
-          path="/contacts"
-          element={
-            <Contacts
-              confirmDelete={confirm}
-              contacts={filteredContacts}
-              loading={loading}
-              groups={groups}
-            />
-          }
-        />
-        <Route
-          path="/contacts/add"
-          element={
-            <AddContact
-              createContactForm={createContactForm}
-              loading={loading}
-              contact={contact}
-              setContactInfo={setContactInfo}
-              groups={groups}
-            />
-          }
-        />
-        <Route
-          path="/contacts/edit/:contactId"
-          element={
-            <EditContact
-              forceRender={forceRender}
-              setForceRender={setForceRender}
-            />
-          }
-        />
-        <Route path="/contacts/:contactId" element={<ViewContact />} />
-      </Routes>
-    </div>
+    <ContactContext.Provider
+      value={{
+        loading,
+        setLoading,
+        contact,
+        setContact,
+        contactQuery,
+        contacts,
+        filteredContacts,
+        groups,
+        onContactChange,
+        deleteContact: confirmDelete,
+        createContact: createContactForm,
+        contactSearch,
+      }}
+    >
+      <div className="App">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Navigate to="/contacts" />} />
+          <Route
+            path="/contacts"
+            element={
+              <Contacts
+                confirmDelete={confirmDelete}
+                contacts={filteredContacts}
+                loading={loading}
+                groups={groups}
+              />
+            }
+          />
+          <Route
+            path="/contacts/add"
+            element={
+              <AddContact
+                createContactForm={createContactForm}
+                loading={loading}
+                contact={contact}
+                setContactInfo={onContactChange}
+                groups={groups}
+              />
+            }
+          />
+          <Route path="/contacts/edit/:contactId" element={<EditContact />} />
+          <Route path="/contacts/:contactId" element={<ViewContact />} />
+        </Routes>
+      </div>
+    </ContactContext.Provider>
   );
 }
 

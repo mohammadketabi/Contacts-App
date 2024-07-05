@@ -2,8 +2,9 @@ import React from "react";
 import { SearchContacts } from "./index";
 import { useLocation } from "react-router-dom";
 
-const Navbar = ({ query, search }) => {
+const Navbar = () => {
   const location = useLocation();
+
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -42,9 +43,7 @@ const Navbar = ({ query, search }) => {
               </li>
             </ul>
 
-            {location.pathname === "/contacts" ? (
-              <SearchContacts query={query} search={search} />
-            ) : null}
+            {location.pathname === "/contacts" ? <SearchContacts /> : null}
           </div>
         </div>
       </nav>
