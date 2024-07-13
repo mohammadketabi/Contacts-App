@@ -1,27 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import Loader from "../Loader";
 import { Link } from "react-router-dom";
+import { ContactContext } from "../../context/contactContext";
 
-const AddContact = ({
-  loading,
-  setContactInfo,
-  contact,
-  groups,
-  createContactForm,
-}) => {
+const AddContact = () => {
+  const { loading, contact, onContactChange, groups, createContact } =
+    useContext(ContactContext);
+
   return (
     <>
       {loading ? (
         <Loader />
       ) : (
         <form
-          onSubmit={createContactForm}
+          onSubmit={createContact}
           style={{ maxWidth: "500px", margin: "auto", paddingTop: "50px" }}
         >
           <div className="mb-3">
             <label className="form-label">Full Name</label>
             <input
-              onChange={setContactInfo}
+              onChange={onContactChange}
               value={contact.fullName}
               name="fullName"
               type="text"
@@ -31,7 +29,7 @@ const AddContact = ({
           <div className="mb-3">
             <label className="form-label">Email</label>
             <input
-              onChange={setContactInfo}
+              onChange={onContactChange}
               value={contact.email}
               name="email"
               type="email"
@@ -41,7 +39,7 @@ const AddContact = ({
           <div className="mb-3">
             <label className="form-label">Mobile</label>
             <input
-              onChange={setContactInfo}
+              onChange={onContactChange}
               value={contact.mobile}
               name="mobile"
               type="text"
@@ -51,7 +49,7 @@ const AddContact = ({
           <div className="mb-3">
             <label className="form-label">Job</label>
             <input
-              onChange={setContactInfo}
+              onChange={onContactChange}
               value={contact.job}
               name="job"
               type="text"
@@ -61,7 +59,7 @@ const AddContact = ({
           <div className="mb-3">
             <label className="form-label">Image</label>
             <input
-              onChange={setContactInfo}
+              onChange={onContactChange}
               value={contact.img}
               name="img"
               type="text"
@@ -72,7 +70,7 @@ const AddContact = ({
           <div className="mb-3">
             <label className="form-label">Select Group</label>
             <select
-              onChange={setContactInfo}
+              onChange={onContactChange}
               value={contact.group}
               name="group"
               className="form-select"

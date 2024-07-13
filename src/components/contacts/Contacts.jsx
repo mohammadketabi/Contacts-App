@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Contact, Loader } from "../index";
 import { Link } from "react-router-dom";
+import { ContactContext } from "../../context/contactContext";
 
-const Contacts = ({ contacts, loading, confirmDelete }) => {
+const Contacts = () => {
+  const { filteredContacts, loading, deleteContact } =
+    useContext(ContactContext);
+
   return (
     <>
       <div className="container text-center p-3">
@@ -20,10 +24,10 @@ const Contacts = ({ contacts, loading, confirmDelete }) => {
       ) : (
         <div className="container p-3">
           <div className="row mb-2">
-            {contacts.length > 0 ? (
-              contacts.map((c) => (
+            {filteredContacts.length > 0 ? (
+              filteredContacts.map((c) => (
                 <Contact
-                  confirmDelete={() => confirmDelete(c.id, c.fullName)}
+                  deleteContact={() => deleteContact(c.id, c.fullName)}
                   key={c.id}
                   contact={c}
                 />

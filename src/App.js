@@ -32,14 +32,11 @@ function App() {
     const fetchData = async () => {
       try {
         setLoading(true);
-
         const { data: contacts } = await getAllContacts();
         const { data: groups } = await getAllGroups();
-
         setContacts(contacts);
         setFilteredContacts(contacts);
         setGroups(groups);
-
         setLoading(false);
       } catch (error) {
         console.log(error.message);
@@ -51,13 +48,15 @@ function App() {
 
   const createContactForm = async (e) => {
     e.preventDefault();
-
     try {
-      const { status } = await createContact(contact);
-
+      setLoading((prevLoading) => !prevLoading);
+      const { status, data } = await createContact(contact);
       if (status === 201) {
+        const allContacts = [...contacts, data];
+        setContacts(allContacts);
+        setFilteredContacts(allContacts);
         setContact({});
-
+        setLoading((prevLoading) => !prevLoading);
         navigate("/contacts");
       }
     } catch (error) {
@@ -68,7 +67,6 @@ function App() {
   const onContactChange = (e) => {
     setContact({ ...contact, [e.target.name]: e.target.value });
   };
-
   const confirmDelete = (contactId, contactFullname) => {
     confirmAlert({
       customUI: ({ onClose }) => {
@@ -92,27 +90,33 @@ function App() {
   };
 
   const removeContact = async (contactId) => {
+    const allContacts = [...contacts];
     try {
-      setLoading(true);
-      const response = await deleteContact(contactId);
-      if (response) {
-        const { data: contactsData } = await getAllContacts();
-        setContacts(contactsData);
-        setLoading(false);
+      const updatedContact = contacts.filter((c) => c.id !== contactId);
+      setContacts(updatedContact);
+      setFilteredContacts(updatedContact);
+
+      const { status } = await deleteContact(contactId);
+
+      if (status !== 200) {
+        setContacts(allContacts);
+        setFilteredContacts(allContacts);
       }
     } catch (error) {
       console.log(error.message);
-      setLoading(false);
+      setContacts(allContacts);
+      setFilteredContacts(allContacts);
     }
   };
 
   const contactSearch = (e) => {
     setContactQuery({ ...contactQuery, text: e.target.value });
-
     const allContacts = contacts.filter((c) => {
       return c.fullName.toLowerCase().includes(e.target.value.toLowerCase());
     });
     setFilteredContacts(allContacts);
+
+    console.log(allContacts);
   };
 
   return (
@@ -121,7 +125,8 @@ function App() {
         loading,
         setLoading,
         contact,
-        setContact,
+        setContacts,
+        setFilteredContacts,
         contactQuery,
         contacts,
         filteredContacts,
@@ -136,29 +141,8 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Navigate to="/contacts" />} />
-          <Route
-            path="/contacts"
-            element={
-              <Contacts
-                confirmDelete={confirmDelete}
-                contacts={filteredContacts}
-                loading={loading}
-                groups={groups}
-              />
-            }
-          />
-          <Route
-            path="/contacts/add"
-            element={
-              <AddContact
-                createContactForm={createContactForm}
-                loading={loading}
-                contact={contact}
-                setContactInfo={onContactChange}
-                groups={groups}
-              />
-            }
-          />
+          <Route path="/contacts" element={<Contacts />} />
+          <Route path="/contacts/add" element={<AddContact />} />
           <Route path="/contacts/edit/:contactId" element={<EditContact />} />
           <Route path="/contacts/:contactId" element={<ViewContact />} />
         </Routes>

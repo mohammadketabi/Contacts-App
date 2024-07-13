@@ -1,82 +1,75 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Loader } from "../../components";
-import {
-  getContact,
-  getGroup,
-  getAllGroups,
-  updateContact,
-} from "../../services/contactServices";
+import { ContactContext } from "../../context/contactContext";
+import { getContact, updateContact } from "../../services/contactServices";
 
-const EditContact = ({ forceRender, setForceRender }) => {
+const EditContact = () => {
   const { contactId } = useParams();
   const navigate = useNavigate();
 
-  const [state, setState] = useState({
-    loading: true,
-    contact: {
-      fullName: "",
-      email: "",
-      mobile: "",
-      job: "",
-      img: "",
-      group: "",
-    },
-    groups: [],
-  });
+  const {
+    loading,
+    setLoading,
+    groups,
+    contacts,
+    setContacts,
+    setFilteredContacts,
+  } = useContext(ContactContext);
+
+  const [contact, setContact] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setState({ ...state, loading: true });
+        setLoading(true);
 
         const { data: contactData } = await getContact(contactId);
 
-        const { data: groupsData } = await getAllGroups();
-
-        setState({
-          ...state,
-          loading: false,
-          contact: contactData,
-          groups: groupsData,
-        });
+        setLoading(false);
+        setContact(contactData);
       } catch (error) {
         console.log(error.message);
-        setState({ ...state, loading: false });
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
 
-  const setContactInfo = (e) => {
-    setState({
-      ...state,
-      contact: {
-        ...state.contact,
-        [e.target.name]: [e.target.value],
-      },
+  const onContactChange = (e) => {
+    setContact({
+      ...contact,
+      [e.target.name]: e.target.value,
     });
   };
 
-  const createContactForm = async (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
 
     try {
-      setState({ ...state, loading: true });
-      const { data } = await updateContact(contactId, state.contact);
+      setLoading(true);
+      const { data, status } = await updateContact(contactId, contact);
 
-      setState({ ...state, loading: false });
-      if (data) {
-        setForceRender(!forceRender);
+      if (status === 200) {
+        setLoading(false);
+
+        const allContact = [...contacts];
+        const contactIndex = allContact.findIndex(
+          (c) => c.id === parseInt(contactId)
+        );
+
+        allContact[contactIndex] = { ...data };
+
+        setContacts(allContact);
+        setFilteredContacts(allContact);
+
         navigate("/contacts");
       }
     } catch (error) {
       console.log(error.message);
-      setState({ ...state, loading: false });
+      setLoading(false);
     }
   };
-
-  const { loading, contact, groups } = state;
 
   return (
     <>
@@ -84,13 +77,13 @@ const EditContact = ({ forceRender, setForceRender }) => {
         <Loader />
       ) : (
         <form
-          onSubmit={createContactForm}
+          onSubmit={submitForm}
           style={{ maxWidth: "500px", margin: "auto", paddingTop: "50px" }}
         >
           <div className="mb-3">
             <label className="form-label">Full Name</label>
             <input
-              onChange={setContactInfo}
+              onChange={onContactChange}
               value={contact.fullName}
               name="fullName"
               type="text"
@@ -100,7 +93,7 @@ const EditContact = ({ forceRender, setForceRender }) => {
           <div className="mb-3">
             <label className="form-label">Email</label>
             <input
-              onChange={setContactInfo}
+              onChange={onContactChange}
               value={contact.email}
               name="email"
               type="email"
@@ -110,7 +103,7 @@ const EditContact = ({ forceRender, setForceRender }) => {
           <div className="mb-3">
             <label className="form-label">Mobile</label>
             <input
-              onChange={setContactInfo}
+              onChange={onContactChange}
               value={contact.mobile}
               name="mobile"
               type="text"
@@ -120,7 +113,7 @@ const EditContact = ({ forceRender, setForceRender }) => {
           <div className="mb-3">
             <label className="form-label">Job</label>
             <input
-              onChange={setContactInfo}
+              onChange={onContactChange}
               value={contact.job}
               name="job"
               type="text"
@@ -130,7 +123,7 @@ const EditContact = ({ forceRender, setForceRender }) => {
           <div className="mb-3">
             <label className="form-label">Image</label>
             <input
-              onChange={setContactInfo}
+              onChange={onContactChange}
               value={contact.img}
               name="img"
               type="text"
@@ -141,7 +134,7 @@ const EditContact = ({ forceRender, setForceRender }) => {
           <div className="mb-3">
             <label className="form-label">Select Group</label>
             <select
-              onChange={setContactInfo}
+              onChange={onContactChange}
               value={contact.group}
               name="group"
               className="form-select"

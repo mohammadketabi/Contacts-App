@@ -4,6 +4,7 @@ import { ContactContext } from "../../context/contactContext";
 
 const SearchContacts = () => {
   const { contactQuery, contactSearch } = useContext(ContactContext);
+
   return (
     <div>
       <form className="d-flex" role="search">
@@ -15,9 +16,6 @@ const SearchContacts = () => {
           onChange={contactSearch}
           value={contactQuery.text}
         />
-        <button className="btn btn-outline-success" type="submit">
-          Search
-        </button>
       </form>
     </div>
   );

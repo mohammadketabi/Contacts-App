@@ -1,21 +1,21 @@
 {
   "contacts": [
     {
-      "fullName": "Mohammad Ketabi",
+      "fullName": "Mohammad Ketabi 6",
       "email": "mohammad.ketabi@gmail.com",
       "mobile": "4164749293",
-      "job": "Web",
+      "job": "Web App",
       "img": "https://mohammadketabi.com/wp-content/themes/mk-portfolio-2022/assets/images/avatars/avatar-1.jpg",
       "group": "1",
       "id": 1
     },
     {
-      "fullName": "Mali",
-      "email": "malihe.molaei93@gmail.com",
+      "fullName": "Mohammad Ketabi 2",
+      "email": "mohammad.ketabi@gmail.com",
       "mobile": "4164749293",
-      "job": "HR",
+      "job": "Web App",
       "img": "https://mohammadketabi.com/wp-content/themes/mk-portfolio-2022/assets/images/avatars/avatar-1.jpg",
-      "group": "4",
+      "group": "3",
       "id": 2
     }
   ],

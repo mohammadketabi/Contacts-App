@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Contact = ({ contact, confirmDelete }) => {
+const Contact = ({ contact, deleteContact }) => {
   return (
     <>
       <div className="col-md-6">
@@ -25,7 +25,7 @@ const Contact = ({ contact, confirmDelete }) => {
               >
                 Edit
               </Link>
-              <button onClick={confirmDelete} className="btn btn-danger m-1">
+              <button onClick={deleteContact} className="btn btn-danger m-1">
                 Delete
               </button>
             </div>
